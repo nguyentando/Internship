@@ -23,10 +23,19 @@ public class OldVideoPlayer extends VideoPlayer implements MediaPlayer.OnBufferi
     OldVideoPlayer(Context context) {
         // Khoi tao Surface View
         mSurfaceView = new SurfaceView(context);
-        mParams = new RelativeLayout.LayoutParams(0, 0);
+        mParams = new ViewGroup.MarginLayoutParams(0, 0);
         mSurfaceView.setLayoutParams(mParams);
         mSurfaceView.getHolder().addCallback(this);
         mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        // Set listener
+        mMediaPlayer.setOnBufferingUpdateListener(this);
+        mMediaPlayer.setOnCompletionListener(this);
+        mMediaPlayer.setOnPreparedListener(this);
+        mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnVideoSizeChangedListener(this);
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
         mContext = context;
     }
 
@@ -37,13 +46,14 @@ public class OldVideoPlayer extends VideoPlayer implements MediaPlayer.OnBufferi
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        setState(VideoPlayerState.PLAYBACK_COMPLETED);
         if(mOnCompletionListener != null)
             mOnCompletionListener.onCompletion(mp);
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mp.start();
+        start();
 
         if(mOnPreparedListener != null)
             mOnPreparedListener.onPrepared(mp);
@@ -61,19 +71,12 @@ public class OldVideoPlayer extends VideoPlayer implements MediaPlayer.OnBufferi
             try {
                 String path = mVideo.getPath();
                 if(path != null)
-                    mMediaPlayer.setDataSource(path);
+                    setDataSource(path);
                 else
-                    mMediaPlayer.setDataSource(mVideo.getUrl());
+                    setDataSource(mVideo.getUrl());
 
-                //mMediaPlayer.setDataSource(mVideo.getUrl());
                 mMediaPlayer.setDisplay(holder);
-                mMediaPlayer.setOnBufferingUpdateListener(this);
-                mMediaPlayer.setOnCompletionListener(this);
-                mMediaPlayer.setOnPreparedListener(this);
-                mMediaPlayer.setOnErrorListener(this);
-                mMediaPlayer.setOnVideoSizeChangedListener(this);
-                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                mMediaPlayer.prepareAsync();
+                prepareAsync();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -113,12 +116,10 @@ public class OldVideoPlayer extends VideoPlayer implements MediaPlayer.OnBufferi
     }
 
     @Override
-    public Object getView() {
-        return mSurfaceView;
-    }
-
-    @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+
+        setState(VideoPlayerState.ERROR);
+
         if(mOnErrorListener != null)
             mOnErrorListener.onError(mp, what, extra);
 
