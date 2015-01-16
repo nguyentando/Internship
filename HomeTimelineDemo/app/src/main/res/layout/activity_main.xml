@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.example.dont.hometimelinedemo.MyListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <TextView android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No data"/>
+
+    <com.example.dont.hometimelinedemo.MyDimView
+        android:id="@+id/rootVideoViewHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:visibility="invisible">
+
+        <com.example.dont.hometimelinedemo.MyImageViewHolder
+            android:id="@+id/imageViewHolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_launcher"/>
+
+        <View class="com.example.dont.hometimelinedemo.MainActivity$MyControlButton"
+            android:id="@+id/controlBtnHolder"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/imageViewHolder"
+            android:background="@drawable/ic_action_stop"
+            android:clickable="true"
+            />
+
+        </com.example.dont.hometimelinedemo.MyDimView>
+
+</RelativeLayout>
