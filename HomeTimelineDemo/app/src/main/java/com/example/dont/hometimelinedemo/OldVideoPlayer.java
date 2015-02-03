@@ -109,7 +109,7 @@ public class OldVideoPlayer extends VideoPlayer implements MediaPlayer.OnBufferi
     public void startConfigHolder() {
         unBindFromParent((ViewGroup)mSurfaceView.getParent());
 
-        // Thay doi thong so cua params, de mTextureView khop voi mPreviewWindow
+        // adjust some params's values (left, top, width, height) to fit mTextureView in mPreviewWindow
         setViewPosition();
 
         bindToParent((ViewGroup) mPreviewWindow.getParent());

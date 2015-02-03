@@ -59,30 +59,30 @@ public class MainActivity extends ListActivity {
             "http://videos-h-14.ak.instagram.com/hphotos-ak-xfa1/t50.2886-16/10826750_561611827303514_1913340305_n.mp4",
             "http://videos-h-16.ak.instagram.com/hphotos-ak-xaf1/t50.2886-16/10813363_725537580866236_1953292738_n.mp4"};
 
-    List<String> mKeys;
-
     List<Video> mVideos;
 
     MyAdapter mAdapter;
+
     VideoPlayer mVideoPlayer;
 
+    // Video cache
     DiskLruVideoCache mDiskLruVideoCache;
     public final String mCacheFolder = "MyVideo";
     public final int mCacheSize = 1024 * 1024 * 100; // = 100 MB
     public final String mExtension = "mp4";
 
-    ProgressBar mProgressBar;
-
+    // Download thread
     Downloader mDownloader;
 
+    // The previous view which is used for playing video
     View previousView;
 
-    //boolean shouldPlay = true;
-
+    // save state and visible items to use in onScroll
     private static final int INIT = 5;
     private int mFirstVisible = 0;
     private int mVisibleItemCount = 0;
 
+    // use for playing video with devices which are under 2.3 (SDK <= 10)
     RelativeLayout rootVideoViewHolder;
     MyImageViewHolder videoViewHolder;
     View controlBtnHolder;
@@ -105,13 +105,12 @@ public class MainActivity extends ListActivity {
 
         // Init mVideos
         mVideos = new ArrayList<Video>();
-        mKeys = new ArrayList<String>();
 
         for (int i=0; i<mUrls.length; i++) {
             int hashKey = mUrls[i].hashCode();
             String keyStr = String.valueOf(hashKey) + "." + mExtension;
-            mKeys.add(keyStr);
-            mVideos.add(new Video(mUrls[i], getVideoPath(mKeys.get(i)), null, mKeys.get(i)));
+            Video video = new Video(mUrls[i], getVideoPath(keyStr), null, keyStr);
+            mVideos.add(video);
         }
 
         // Init mVideoPlayer
@@ -119,8 +118,6 @@ public class MainActivity extends ListActivity {
             mVideoPlayer = new NewVideoPlayer(MainActivity.this);
         else
             mVideoPlayer = new OldVideoPlayer(MainActivity.this);
-
-        //mVideoPlayer = new OldVideoPlayer(MainActivity.this);
 
         // set state listener for mVideoPlayer
         mVideoPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -157,11 +154,6 @@ public class MainActivity extends ListActivity {
                 mVideoPlayer.unBindFromParent((ViewGroup)view);
             }
         });*/
-
-        // Init progress bar
-        mProgressBar = new ProgressBar(this);
-        mProgressBar.setIndeterminate(true);
-        mProgressBar.setVisibility(View.INVISIBLE);
 
         // Start downloader thread
         mDownloader = new Downloader();

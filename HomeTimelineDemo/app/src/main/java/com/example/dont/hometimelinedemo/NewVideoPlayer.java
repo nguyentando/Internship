@@ -21,7 +21,7 @@ public class NewVideoPlayer extends VideoPlayer implements TextureView.SurfaceTe
     TextureView mTextureView;
 
     NewVideoPlayer(Context context) {
-        //Khoi tao mTextureView
+        // Init mTextureView
         mTextureView = new TextureView(context);
         mParams = new ViewGroup.MarginLayoutParams(0, 0);
         mTextureView.setLayoutParams(mParams);
@@ -111,7 +111,7 @@ public class NewVideoPlayer extends VideoPlayer implements TextureView.SurfaceTe
     public void startConfigHolder() {
         unBindFromParent((ViewGroup)mTextureView.getParent());
 
-        // Thay doi thong so cua params, de mTextureView khop voi mPreviewWindow
+        // adjust some params's values (left, top, width, height) to fit mTextureView in mPreviewWindow
         setViewPosition();
 
         bindToParent((ViewGroup) mPreviewWindow.getParent());
